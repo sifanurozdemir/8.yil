@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yıldönümü Albümü</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fde2e4; /* Pastel pembe arka plan */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            overflow: hidden; /* Kalplerin taşmaması için */
+        }
+
+        .album {
+            background-color: #fff1e6; /* Pastel tonlarında albüm arka planı */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 60%;
+            position: relative;
+            z-index: 1; /* Albüm kalplerin üstünde görünür */
+        }
+
+        .album img {
+            width: 300px; /* Fotoğraf boyutunu ayarla */
+            height: 300px; /* Kare şeklinde görünüm */
+            object-fit: cover; /* Fotoğrafın taşma yapmaması için */
+            border: 20px solid white; /* Beyaz çerçeve */
+            background-color: white;
+            padding-bottom: 80px; /* Alt kısımda boşluk bırak */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Gölge efekti */
+            display: block;
+            margin: 0 auto;
+        }
+
+        .note {
+            font-size: 1.2em;
+            color: #6b705c; /* Romantik bir kahverengi tonu */
+            margin-bottom: 20px;
+        }
+
+        .audio-control {
+            margin-top: 20px;
+        }
+
+        .audio-control button {
+            background-color: #6b705c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .audio-control button:hover {
+            background-color: #a5a58d;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .controls button {
+            background-color: #b7b7a4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .controls button:hover {
+            background-color: #a5a58d;
+        }
+
+        /* Kalplerin kapsayıcı alanı */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Albümün altında kalması için */
+            overflow: hidden;
+        }
+
+        /* Her bir kalbin görünümü ve animasyonu */
+        .heart {
+            position: absolute;
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            border-radius: 50%;
+            transform: rotate(-45deg);
+            animation: floatUp 5s linear infinite;
+        }
+
+        /* Kalbin iki yuvarlak kısmını oluşturuyoruz */
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            border-radius: 50%;
+        }
+
+        /* Sol üst yuvarlak kısmı */
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+
+        /* Sağ üst yuvarlak kısmı */
+        .heart::after {
+            left: 10px;
+            top: 0;
+        }
+
+        /* Kalplerin yukarı süzülme animasyonu */
+        @keyframes floatUp {
+             0% {
+                    transform: translateY(100vh) scale(0.5);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-10vh) scale(1.2);
+                    opacity: 0;
+                }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Kalplerin oluşturulacağı kapsayıcı -->
+    <div class="hearts-container"></div>
+
+    <!-- Albüm İçeriği -->
+    <div class="album">
+        <img id="albumImage" src="fotolar\foto1.jpg" alt="Romantik Anı">
+        <div class="note" id="albumNote">Tam sekiz yıl olmuş, dile kolay… hayatıma girdiğin o gün, kalbimde bambaşka bir ateş yandı. Seninle birlikte hayatım o kadar değişti ki, sanki her şey seninle anlam kazandı, renklendi. O günden bu yana her anımız, her saniyemiz, bana ne kadar doğru bir yerde olduğumu hatırlattı.</div>
+        <div class="controls">
+            <button onclick="prevPage()">&larr; Geri♡</button>
+            <button onclick="nextPage()">♡İleri &rarr;</button>
+        </div>
+    </div>
+
+    <!-- Müzik Kontrolleri -->
+    <div class="audio-control">
+        <button onclick="toggleMusic()">♡ Bu Şarkı Senin İçin ♡</button>
+    </div>
+
+    <!-- Müzik -->
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="C:\Users\hp\Desktop\WEB\iyiki!\ask.mp3" type="audio/mpeg">
+        Tarayıcınız ses dosyasını desteklemiyor.
+    </audio>
+
+    <script>
+                // Albüm verileri
+        const album = [
+            { photo: 'fotolar/foto1.jpg', note: 'Tam sekiz yıl olmuş, dile kolay… hayatıma girdiğin o gün, kalbimde bambaşka bir ateş yandı. Seninle birlikte hayatım o kadar değişti ki, sanki her şey seninle anlam kazandı, renklendi. O günden bu yana her anımız, her saniyemiz, bana ne kadar doğru bir yerde olduğumu hatırlattı.' },
+            { photo: 'fotolar/foto2.jpg', note: 'İlk günkü heyecanımı hiç kaybetmedim, hala seni gördüğümde kalbim deli gibi atıyor. Bir bakışın, bir gülüşün, dünyadaki her şeyden daha değerli benim için.' },
+            { photo: 'fotolar/foto3.jpg', note: 'Senin yanında olmak, en huzurlu limanda demir atmak gibi. Sen, benim sığınağım, güvenim, en büyük iyikimsin.' },
+            { photo: 'fotolar/foto4.jpg', note: 'Hayatımın her yerinde sen varsın. Gözlerimi kapatıyorum, yüzün beliriyor; kalbim seni her atışında hissediyor.' },
+            { photo: 'fotolar/foto5.jpg', note: ' Yıldızlı bir gecede hayal ederek heyecanla dilek tutan bir çocuk gibiyim… Sen benim gerçekleşen dileğimsin.' },
+            { photo: 'fotolar/foto6.jpg', note: 'Seninle her şey daha güzel, daha anlamlı. İçimde her gün yeniden bahar açtırıyorsun.' },
+            { photo: 'fotolar/foto7.jpg', note: 'Seninle geçen bu sekiz yılda, her an bir mucizeydi. Yanımda olduğun her saniye, bana aşkın en güzel halini yaşattın.' },
+            { photo: 'fotolar/foto8.jpg', note: ' Birlikte güldük, birlikte ağladık, zorlukların üstesinden geldik, ama hep el eleydik. En değerli hazinem oldun, her defasında seninle birlikte yeniden doğdum.' },
+            { photo: 'fotolar/foto9.jpg', note: 'Sevgilim, iyi ki varsın..' },
+            { photo: 'fotolar/foto10.jpg', note: ' İyi ki kalbimin sahibi sensin. Her şey için o kadar minnettarım ki… Her sabah sana uyanmak, seni sevdiğimi bilmek bana yetiyor.' },
+            { photo: 'fotolar/foto11.jpg', note: ' Seninle geçen her yıl, bana bir ömür kadar değerli geliyor. Daha nice yıllarımız olacak, birlikte yaşlanacağız. Ellerimiz hep birbirine kenetli kalacak.' },
+            { photo: 'fotolar/foto12.jpg', note: 'Sana baktığımda, gözlerinde kendimi buluyorum. Sen benim ruhumun diğer yarısısın. İkimiz bir bütünü tamamlıyoruz, sen olmadan ben yarım kalırım.' },
+            { photo: 'fotolar/foto13.jpg', note: 'Hep yanımda kal olur mu?' },
+            { photo: 'fotolar/foto14.jpg', note: 'Her anında seni sevmekten asla vazgeçmeyeceğim..' },
+            { photo: 'fotolar/foto15.jpg', note: 'Bu sekiz yılda bana verdiğin her güzel şey için binlerce kez teşekkür ederim. Birlikte daha nice yıldönümlerine, daha nice güzel anılara yürüyelim.' },
+            { photo: 'fotolar/foto16.jpg', note: 'Seninle her şey o kadar güzel ki, seni bulduğum için dünyaya binlerce kez teşekkür ediyorum.' },
+            { photo: 'fotolar/foto17.jpg', note: 'Hayatımızın bu yolculuğunda birlikte büyüdük, birlikte olgunlaştık. Seninle geçirdiğim her an, bana güç verdi, umut verdi.' },
+            { photo: 'fotolar/foto18.jpg', note: ' daha nice maceralarımız, hayallerimiz, umutlarımız...' },
+            { photo: 'fotolar/foto19.jpg', note: 'Hep yan yana, omuz omuza olacağız, zorlukları da mutlulukları da paylaşacağız. ' },
+            { photo: 'fotolar/foto20.jpg', note: 'Elim hep senin elinde, kalbim hep seninle atsın sevgilim. Seni çooook seviyorum ♡' },
+
+ 
+        ];
+
+        let currentPage = 0;
+
+        // Fotoğraf ve notu güncelleyen fonksiyon
+        function updateAlbum() {
+            document.getElementById('albumImage').src = album[currentPage].photo;
+            document.getElementById('albumNote').innerText = album[currentPage].note;
+        }
+
+        // Sonraki sayfa
+        function nextPage() {
+            if (currentPage < album.length - 1) {
+                currentPage++;
+                updateAlbum();
+            }
+        }
+
+        // Önceki sayfa
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updateAlbum();
+            }
+        }
+
+        // Müzik kontrol fonksiyonu
+        let isPlaying = true;
+        const music = document.getElementById('backgroundMusic');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+            } else {
+                music.play();
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Kalp üretimi fonksiyonu
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+
+            // Rastgele yatay konumlandırma
+            heart.style.left = Math.random() * 100 + 'vw';
+            
+            // Farklı boyutlarda kalpler
+            heart.style.width = heart.style.height = Math.random() * 20 + 10 + 'px';
+            
+            // Kalp süresini rastgele belirle
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            
+            document.querySelector('.hearts-container').appendChild(heart);
+
+            // Kalp animasyonu tamamlandığında kalbi sil
+            setTimeout(() => {
+                heart.remove();
+            }, 5000); // 5 saniye sonra kalp kaldırılıyor
+        }
+
+        // Belirli aralıklarla kalp oluşturma
+        setInterval(createHeart, 500);
+    </script>
+
+</body>
+</html>
